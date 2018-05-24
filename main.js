@@ -107,6 +107,7 @@ function parseArgs(argv) {
             usage();
             break;
             case "--version":
+            case "-v":
             version();
             break;
             case "--retries":
