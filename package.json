@@ -6,6 +6,7 @@
   "scripts": {},
   "author": "Richard North",
   "license": "Apache-2.0",
+  "repository": "github:rnorth/plzrun",
   "dependencies": {
     "chalk": "^2.4.1",
     "npm": "^6.1.0"
