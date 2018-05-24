@@ -42,33 +42,33 @@ async function main() {
     while (true) {
         tries++;
         
-        console.log(`Run ${chalk.bold(tries)}/${chalk.bold(1 + args.retries)} using ${shell}: ${chalk.bold(args.command)}`);
+        logNote(`Run ${chalk.bold(tries)}/${chalk.bold(1 + args.retries)} using ${shell}: ${chalk.bold(args.command)}`);
         const { code, signal } = await spawnWithPromise(args.command, { shell, stdio });
         
         lastExitCode = code;
         if (signal === "SIGINT") {
-            console.log(chalk.blue("Terminated by SIGINT (Ctrl-C)"));
+            logInfo(`Terminated by SIGINT (Ctrl-C)`);
             process.exit(code);
         }
         
         if (code === 0) {
-            console.log(chalk.green("Exited with success (exit code 0)"));
+            logSuccess(`Exited with success (exit code 0)`);
             process.exit(0);
         }
         
         if (signal) {
-            console.log(chalk.yellow(`Exited with code ${code} (${signal})`));
+            logWarn(`Exited with code ${code} (${signal})`);
         } else {
-            console.log(chalk.yellow(`Exited with code ${code}`));
+            logWarn(`Exited with code ${code}`);
         }
         
         if (tries > args.retries && args.retries != -1) {
-            console.log(chalk.red(`Retry limit hit - aborting`));
+            logError(`Retry limit hit - aborting`);
             process.exit(lastExitCode);
         }
         
         if (args.sleep > 0) {
-            console.log(`Pausing for ${chalk.bold(args.sleep)}s between executions`);
+            logNote(`Pausing for ${chalk.bold(args.sleep)}s between executions`);
             await sleep(args.sleep);
         }
     }
@@ -125,4 +125,25 @@ function parseArgs(argv) {
     parsed.command = command.join(" ");
     
     return parsed;
+}
+
+
+
+function time() {
+    return chalk.dim(new Date().toLocaleTimeString() + ":");
+}
+function logSuccess(message) {
+    console.log(chalk.green(`${time()} ${message}`));
+}
+function logWarn(message) {
+    console.log(chalk.yellow(`${time()} ${message}`));
+}
+function logError(message) {
+    console.log(chalk.red(`${time()} ${message}`));
+}
+function logInfo(message) {
+    console.log(chalk.blue(`${time()} ${message}`));
+}
+function logNote(message) {
+    console.log(`${time()} ${message}`);
 }
