@@ -1,0 +1,16 @@
+{
+  "name": "plzrun",
+  "version": "1.0.0",
+  "description": "A tool for supervising and retrying command line executions. Runs something until it succeeds.",
+  "main": "main.js",
+  "scripts": {},
+  "author": "Richard North",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "npm": "^6.1.0"
+  },
+  "bin": {
+    "plzrun": "main.js"
+  }
+}
