@@ -13,5 +13,8 @@
   },
   "bin": {
     "plzrun": "main.js"
+  },
+  "engines": {
+    "node": ">=7.6.0"
   }
 }
