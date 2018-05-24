@@ -9,16 +9,16 @@ const defaults = {
 
 function usage() {
     console.log(`
-Usage: plzrun [options] COMMAND
-
-A tool for supervising and retrying command line executions. Runs something until it succeeds.
-
-Options:
-  -r, --retries number          How many times to retry the command if it fails (default: ${defaults.retries})
-  -s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
-  -h, --help                    Display this message
-  -v, --version                 Display version information
-`);
+    Usage: plzrun [options] COMMAND
+    
+    A tool for supervising and retrying command line executions. Runs something until it succeeds.
+    
+    Options:
+    -r, --retries number          How many times to retry the command if it fails (default: ${defaults.retries})
+    -s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
+    -h, --help                    Display this message
+    -v, --version                 Display version information
+    `);
     process.exit(0);
 }
 
@@ -32,10 +32,10 @@ main();
 
 async function main() {
     const args = parseArgs(process.argv);
-
+    
     const shell = process.env.SHELL;
     const stdio = "inherit";
-
+    
     let tries = 0;
     let lastExitCode = 0;
     
@@ -55,7 +55,7 @@ async function main() {
             console.log(chalk.green("Exited with success (exit code 0)"));
             process.exit(0);
         }
-
+        
         if (signal) {
             console.log(chalk.yellow(`Exited with code ${code} (${signal})`));
         } else {
@@ -104,22 +104,22 @@ function parseArgs(argv) {
         switch (arg) {
             case "--help":
             case "-h":
-                usage();
-                break;
+            usage();
+            break;
             case "--version":
-                version();
-                break;
+            version();
+            break;
             case "--retries":
             case "-r":
-                parsed.retries = parseInt(argv.shift());
-                break;
+            parsed.retries = parseInt(argv.shift());
+            break;
             case "--sleep":
             case "-s":
-                parsed.sleep = parseInt(argv.shift());
-                break;
+            parsed.sleep = parseInt(argv.shift());
+            break;
             default:
-                command.push(arg)
-                break;
+            command.push(arg)
+            break;
         }
     }
     parsed.command = command.join(" ");
