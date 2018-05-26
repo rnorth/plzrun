@@ -3,7 +3,7 @@ const { spawn } = require("child_process");
 const chalk = require('chalk');
 
 const defaults = {
-    retries: 2,
+    retries: -1,
     sleep: 0,    
 }
 
@@ -13,7 +13,7 @@ Usage: plzrun [options] COMMAND
 A tool for supervising and retrying command line executions. Runs something until it succeeds.
 
 Options:
--r, --retries number          How many times to retry the command if it fails (default: ${defaults.retries})
+-r, --retries number          How many times to retry the command if it fails (-1 is infinite tries, default: ${defaults.retries})
 -s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
 -h, --help                    Display this message
 -v, --version                 Display version information
