@@ -4,7 +4,8 @@ const chalk = require('chalk');
 
 const defaults = {
     retries: -1,
-    sleep: 0,    
+    sleep: 0,
+    exponential: false,
 }
 
 const usageText = `
@@ -15,6 +16,7 @@ A tool for supervising and retrying command line executions. Runs something unti
 Options:
 -r, --retries number          How many times to retry the command if it fails (-1 is infinite tries, default: ${defaults.retries})
 -s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
+-e, --exponential             Apply exponential backoff to sleep durations (using exponent 1.5)
 -h, --help                    Display this message
 -v, --version                 Display version information
 `;
@@ -29,6 +31,7 @@ async function main() {
     
     let tries = 0;
     let lastExitCode = 0;
+    let sleepMultiplier = 1;
     
     while (true) {
         tries++;
@@ -59,8 +62,13 @@ async function main() {
         }
         
         if (args.sleep > 0) {
-            logNote(`Pausing for ${chalk.bold(args.sleep)}s between executions`);
-            await sleep(args.sleep);
+            let duration = Math.ceil(args.sleep * sleepMultiplier);
+            logNote(`Pausing for ${chalk.bold(duration)}s between executions`);
+            await sleep(duration);
+        }
+
+        if (args.exponential) {
+            sleepMultiplier *= 1.5;
         }
     }
 }
@@ -95,23 +103,27 @@ function parseArgs(argv) {
         switch (arg) {
             case "--help":
             case "-h":
-            usage();
-            break;
+                usage();
+                break;
             case "--version":
             case "-v":
-            version();
-            break;
+                version();
+                break;
             case "--retries":
             case "-r":
-            parsed.retries = parseInt(argv.shift());
-            break;
+                parsed.retries = parseInt(argv.shift());
+                break;
             case "--sleep":
             case "-s":
-            parsed.sleep = parseInt(argv.shift());
-            break;
+                parsed.sleep = parseInt(argv.shift());
+                break;
+            case "--exponential":
+            case "-e":
+                parsed.exponential = true;
+                break;
             default:
-            command.push(arg)
-            break;
+                command.push(arg)
+                break;
         }
     }
     parsed.command = command.join(" ");
