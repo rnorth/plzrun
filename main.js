@@ -6,6 +6,7 @@ const defaults = {
     retries: -1,
     sleep: 0,
     exponential: false,
+    clear: false
 }
 
 const usageText = `
@@ -14,10 +15,15 @@ Usage: plzrun [options] COMMAND
 A tool for supervising and retrying command line executions. Runs something until it succeeds.
 
 Options:
--r, --retries number          How many times to retry the command if it fails (-1 is infinite tries, default: ${defaults.retries})
--s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
--e, --exponential             Apply exponential backoff to sleep durations (using exponent 1.5). If a sleep duration is not set, use of -e will apply an automatic base sleep duration of 1s.
--h, --help                    Display this message
+-r, --retries number          How many times to retry the command if it fails (-1 is infinite tries, default: -1)
+-s, --sleep number            How long to wait in between executions (in seconds, default: 0)
+-e, --exponential             Apply exponential backoff to sleep durations (using exponent 1.5). 
+                                If a sleep duration is not set, use of -e will apply an automatic 
+                                base sleep duration of 1s.
+-c, --clear                   Behave in a semi watch-like manner, resetting the terminal in between 
+                                executions. In contrast to watch(1), all output will remain visible 
+                                in scrollback and the screen will not be cleared at exit.
+-h, --help                    Display help
 -v, --version                 Display version information
 `;
 
@@ -43,6 +49,10 @@ async function main() {
     while (true) {
         tries++;
         
+        if (args.clear) {
+            process.stdout.write("\033[2J\033[H");
+        }
+
         logNote(`Run ${chalk.bold(tries)}/${chalk.bold(maxTries)} using ${shell}: ${chalk.bold(args.command)}`);
         const { code, signal } = await spawnWithPromise(args.command, { shell, stdio });
         
@@ -128,6 +138,10 @@ function parseArgs(argv) {
             case "-e":
                 parsed.exponential = true;
                 parsed.sleep = parsed.sleep || 1;
+                break;
+            case "--clear":
+            case "-c":
+                parsed.clear = true;
                 break;
             default:
                 command.push(arg)
