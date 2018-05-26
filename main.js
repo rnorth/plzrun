@@ -7,26 +7,17 @@ const defaults = {
     sleep: 0,    
 }
 
-function usage() {
-    console.log(`
-    Usage: plzrun [options] COMMAND
-    
-    A tool for supervising and retrying command line executions. Runs something until it succeeds.
-    
-    Options:
-    -r, --retries number          How many times to retry the command if it fails (default: ${defaults.retries})
-    -s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
-    -h, --help                    Display this message
-    -v, --version                 Display version information
-    `);
-    process.exit(0);
-}
+const usageText = `
+Usage: plzrun [options] COMMAND
 
-function version() {
-    const packageJson = require('./package.json');
-    console.log(packageJson.version);
-    process.exit(0);
-}
+A tool for supervising and retrying command line executions. Runs something until it succeeds.
+
+Options:
+-r, --retries number          How many times to retry the command if it fails (default: ${defaults.retries})
+-s, --sleep number            How long to wait in between executions (in seconds, default: ${defaults.sleep})
+-h, --help                    Display this message
+-v, --version                 Display version information
+`;
 
 main();
 
@@ -128,7 +119,16 @@ function parseArgs(argv) {
     return parsed;
 }
 
+function usage() {
+    console.log(usageText);
+    process.exit(0);
+}
 
+function version() {
+    const packageJson = require('./package.json');
+    console.log(packageJson.version);
+    process.exit(0);
+}
 
 function time() {
     return chalk.dim(new Date().toLocaleTimeString() + ":");
