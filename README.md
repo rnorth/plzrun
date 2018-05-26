@@ -12,6 +12,7 @@ A tool for supervising and retrying command line executions. Runs something unti
 Options:
   -r, --retries number          How many times to retry the command if it fails (-1 is infinite tries, default: -1)
   -s, --sleep number            How long to wait in between executions (in seconds, default: 0)
+  -e, --exponential             Apply exponential backoff to sleep durations (using exponent 1.5). If a sleep duration is not set, use of -e will apply an automatic base sleep duration of 1s.
   -h, --help                    Display help
   -v, --version                 Display version information
 ```
